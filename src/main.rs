@@ -4,6 +4,7 @@ mod kafka;
 fn main() {
     println!("Kafka to RabbitMQ!");
 
-    let _r = rabbitmq::RabbitClient::new();
-    let _k = kafka::KafkaClient::new();
+    let mut r = rabbitmq::RabbitClient::new();
+    let mut k = kafka::KafkaClient::new();
+    let _k_result = k.consume( |k,v| r.queue(k,v));
 }
