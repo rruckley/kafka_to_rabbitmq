@@ -1,6 +1,7 @@
 // Kafka Module
 
 use kafka::consumer::{Consumer, FetchOffset, GroupOffsetStorage};
+use std::str;
 
 struct KafkaConfig {
     pub host : String,
@@ -35,5 +36,34 @@ impl KafkaClient {
         Self {
             consumer
         }
+    }
+
+    pub fn consume<A>(self : & mut Self, mut func : A) -> Result<String,String> 
+    where 
+        A : FnMut(String,String) -> Option<i32> {
+        // Read from topic, pulling out MessageSets and Messages and pass key / values to closure
+        let mut count = 0;
+        for ms in self.consumer.poll().expect("Could not poll broker").iter() {
+            // Iterate through the returned message sets
+            for m in ms.messages() {
+                // Iterace through the contained messages
+                let key = str::from_utf8(m.key)
+                    .expect("Could not convert key to string")
+                    .to_string();
+                let value = str::from_utf8(m.value)
+                    .expect("Could not convert value to string")
+                    .to_string();
+                let result = func(key,value);
+                match result {
+                    Some(c) => count += c,
+                    None => (),
+                }        
+            }
+        };
+        match count {
+            0   => Err("No results".to_string()),
+            _   => Ok("Processed some records".to_string()),
+        }
+        
     }
 }
