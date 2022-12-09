@@ -20,7 +20,7 @@ pub struct RabbitClient {
 impl RabbitClient {
     pub fn new() -> Self {
         let config = RabbitMQConfig::default();
-        let session = Session::open_url(&config.url.to_string()).expect("Could not connecto to RabbitMQ");
+        let session = Session::open_url(&config.url).expect("Could not connecto to RabbitMQ");
         Self {
             session,
         }

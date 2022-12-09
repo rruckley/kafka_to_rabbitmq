@@ -25,8 +25,8 @@ pub struct KafkaClient {
 impl KafkaClient {
     pub fn new() -> Self {
         let config = KafkaConfig::default();
-        let consumer = Consumer::from_hosts(vec!(config.host.to_owned()))
-            .with_topic_partitions(config.topic.to_owned(),&[0,1])
+        let consumer = Consumer::from_hosts(vec!(config.host))
+            .with_topic_partitions(config.topic,&[0,1])
             .with_fallback_offset(FetchOffset::Earliest)
             .with_group(config.group)
             .with_offset_storage(GroupOffsetStorage::Kafka)
