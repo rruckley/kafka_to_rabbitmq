@@ -1,5 +1,5 @@
 // RabbitMQ Module
-use amqp::{Basic, Session};
+use amqp::{Session};
 
 struct RabbitMQConfig {
     url : String,
@@ -13,11 +13,11 @@ impl ::std::default::Default for RabbitMQConfig {
     }
 }
 
-pub struct rClient {
+pub struct RabbitClient {
     session : amqp::Session,
 }
 
-impl rClient {
+impl RabbitClient {
     pub fn new() -> Self {
         let config = RabbitMQConfig::default();
         let session = Session::open_url(&config.url.to_string()).expect("Could not connecto to RabbitMQ");
